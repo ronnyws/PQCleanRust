@@ -1,0 +1,10 @@
+[package]
+name = "common"
+version = "0.1.0"
+authors = ["Ronny Wichers Schreur <ronny@cs.ru.nl>"]
+edition = "2018"
+
+[lib]
+crate-type = ["staticlib", "rlib"]
+
+[dependencies]
