@@ -5,6 +5,7 @@ use libc::size_t;
 extern "C" {
     fn br_dec32le_C(src: *const u8) -> u32;
     fn br_range_dec32le_C(v: *mut u32, num: size_t, src: *const u8);
+    fn br_swap32_C(x: u32) -> u32;
 }
 
 #[no_mangle]
@@ -33,4 +34,14 @@ pub unsafe extern "C" fn br_range_dec32le(v: *mut u32, num: size_t, src: *const 
     for (i, p) in v.iter_mut().enumerate() {
         assert_eq!(*p,v2[i]);
     }        
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn br_swap32(x: u32) -> u32 {
+    let result_c = br_swap32_C(x);
+
+    let result_rust = common::aes::br_swap32(x);
+    assert_eq!(result_c, result_rust);
+
+    result_rust
 }
