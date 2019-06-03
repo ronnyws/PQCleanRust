@@ -6,6 +6,7 @@ extern "C" {
     fn br_dec32le_C(src: *const u8) -> u32;
     fn br_range_dec32le_C(v: *mut u32, num: size_t, src: *const u8);
     fn br_swap32_C(x: u32) -> u32;
+    fn br_enc32le_C(dst: *mut u8, x: u32);
 }
 
 #[no_mangle]
@@ -44,4 +45,19 @@ pub unsafe extern "C" fn br_swap32(x: u32) -> u32 {
     assert_eq!(result_c, result_rust);
 
     result_rust
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn br_enc32le(dst: *mut u8, x: u32) {
+    br_enc32le_C(dst, x);
+
+    let dst: &mut [u8] = slice::from_raw_parts_mut(dst, 4);
+
+    let mut dstv:  &mut Vec<u8> = &mut dst.to_vec();
+    let dst2 = &mut dstv;
+    common::aes::br_enc32le(dst2, x);
+    
+    for i in 0..4 {
+        assert_eq!(dst[i],dst2[i]);
+    }        
 }

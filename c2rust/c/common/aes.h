@@ -5,3 +5,4 @@
 extern uint32_t br_dec32le(const unsigned char *src);
 extern void br_range_dec32le(uint32_t *v, size_t num, const unsigned char *src);
 extern uint32_t br_swap32(uint32_t x);
+extern void br_enc32le(unsigned char *dst, uint32_t x);
