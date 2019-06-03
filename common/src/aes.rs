@@ -1,5 +1,6 @@
 // TODO: remove pub qualifiers
-// TODO: add inline qualifiers
+
+#[inline]
 pub fn br_decl32le(src: &[u8]) -> u32 {
     (src[0] as u32)
     | ((src[1] as u32) << 8)
@@ -15,12 +16,14 @@ pub fn br_range_dec32le(v: &mut[u32], src: &[u8]) {
     }
 }
 
+#[inline]
 pub fn br_swap32(x: u32) -> u32 {
     let x = ((x & 0x00FF00FF) << 8) // TODO: check integer promotion rules
         | ((x >> 8) & 0x00FF00FF);
     x << 16 | x >> 16
 }  
 
+#[inline]
 pub fn br_enc32le(dst: &mut[u8], x: u32) {
     dst[0] = x as u8;
     dst[1] = (x >> 8) as u8;
