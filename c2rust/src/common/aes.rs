@@ -31,8 +31,8 @@ pub unsafe extern "C" fn br_range_dec32le(v: *mut u32, num: size_t, src: *const 
     let v2 = &mut vv;
     common::aes::br_range_dec32le(v2, src);
     
-    for (i, p) in v.iter_mut().enumerate() {
-        assert_eq!(*p,v2[i]);
+    for i in 0..num {
+        assert_eq!(v[i],v2[i]);
     }        
 }
 
