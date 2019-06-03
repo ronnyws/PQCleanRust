@@ -233,3 +233,29 @@ pub fn br_aes_ct64_ortho(q: &mut[u64]) {
     swap8(q,2,6);
     swap8(q,3,7);
 }
+
+pub fn br_aes_ct64_interleave_in(q: &mut[u64], i0: usize, i1: usize, w: &[u32]) {
+    let x0 = w[0] as u64;
+    let x1 = w[1] as u64;
+    let x2 = w[2] as u64;
+    let x3 = w[3] as u64;
+    let x0 = x0 | (x0 << 16);
+    let x1 = x1 | (x1 << 16);
+    let x2 = x2 | (x2 << 16);
+    let x3 = x3 | (x3 << 16);
+    let x0 = x0 & 0x0000FFFF0000FFFF;
+    let x1 = x1 & 0x0000FFFF0000FFFF;
+    let x2 = x2 & 0x0000FFFF0000FFFF;
+    let x3 = x3 & 0x0000FFFF0000FFFF;
+    let x0 = x0 | (x0 << 8);
+    let x1 = x1 | (x1 << 8);
+    let x2 = x2 | (x2 << 8);
+    let x3 = x3 | (x3 << 8);
+    let x0 = x0 & 0x00FF00FF00FF00FF;
+    let x1 = x1 & 0x00FF00FF00FF00FF;
+    let x2 = x2 & 0x00FF00FF00FF00FF;
+    let x3 = x3 & 0x00FF00FF00FF00FF;
+    q[i0]= x0 | (x2 << 8);
+    q[i1] = x1 | (x3 << 8);
+}
+

@@ -10,6 +10,7 @@ extern "C" {
     fn br_range_enc32le_C(dst: *mut u8, v: *const u32, num: size_t);
     fn br_aes_ct64_bitslice_Sbox_C(q: *mut u64);
     fn br_aes_ct64_ortho_C(q: *mut u64);
+    fn br_aes_ct64_interleave_in_C(q0: *mut u64, q1: *mut u64, w: *const u32);
 }
 
 #[no_mangle]
@@ -109,4 +110,17 @@ pub unsafe extern "C" fn br_aes_ct64_ortho(q_raw: *mut u64) {
     for i in 0..8 {
         assert_eq!(q[i],q2[i]);
     }        
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn br_aes_ct64_interleave_in(q0: *mut u64, q1: *mut u64, w_raw: *const u32) {
+    let w: &[u32] = slice::from_raw_parts(w_raw, 4);
+    assert_ne!(q0, q1);
+    let mut q01 = [*q0, *q1];
+    common::aes::br_aes_ct64_interleave_in(&mut q01, 0, 1, w);
+
+    br_aes_ct64_interleave_in_C(q0, q1, w_raw);
+
+    assert_eq!(*q0, q01[0]);
+    assert_eq!(*q1, q01[1]);
 }
