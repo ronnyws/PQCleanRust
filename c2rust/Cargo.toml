@@ -9,3 +9,5 @@ crate-type = ["staticlib", "rlib"]
 
 [dependencies]
 common = { path = "../common" }
+
+libc = "0.2.0"
