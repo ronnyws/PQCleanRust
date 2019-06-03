@@ -1,3 +1,4 @@
+// TODO: remove pub qualifiers
 pub fn br_decl32le(src: &[u8]) -> u32 {
     (src[0] as u32)
     | ((src[1] as u32) << 8)
@@ -12,3 +13,16 @@ pub fn br_range_dec32le(v: &mut[u32], src: &[u8]) {
         *p = br_decl32le(&src[i*4..(i+1)*4]);
     }
 }
+
+/*
+static inline uint32_t br_swap32(uint32_t x) {
+    x = ((x & (uint32_t)0x00FF00FF) << 8)
+        | ((x >> 8) & (uint32_t)0x00FF00FF);
+    return (x << 16) | (x >> 16);
+}
+*/
+pub fn br_swap32(x: u32) -> u32 {
+    let x = ((x & 0x00FF00FF) << 8) // TODO: check integer promotion rules
+        | ((x >> 8) & 0x00FF00FF);
+    x << 16 | x >> 16
+}  
