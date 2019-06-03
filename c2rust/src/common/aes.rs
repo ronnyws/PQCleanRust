@@ -24,16 +24,16 @@ pub unsafe extern "C" fn br_dec32le(src: *const u8) -> u32 {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn br_range_dec32le(v: *mut u32, num: size_t, src: *const u8) {
-    br_range_dec32le_C(v, num, src);
-
-    let v: &mut [u32] = slice::from_raw_parts_mut(v, num);
-    let src: &[u8] = slice::from_raw_parts(src, num*4 as usize);
+pub unsafe extern "C" fn br_range_dec32le(v_raw: *mut u32, num: size_t, src_raw: *const u8) {
+    let v: &mut [u32] = slice::from_raw_parts_mut(v_raw, num);
+    let src: &[u8] = slice::from_raw_parts(src_raw, num*4 as usize);
 
     let mut vv:  &mut Vec<u32> = &mut v.to_vec();
     let v2 = &mut vv;
     common::aes::br_range_dec32le(v2, src);
     
+    br_range_dec32le_C(v_raw, num, src_raw);
+
     for i in 0..num {
         assert_eq!(v[i],v2[i]);
     }        
@@ -50,31 +50,31 @@ pub unsafe extern "C" fn br_swap32(x: u32) -> u32 {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn br_enc32le(dst: *mut u8, x: u32) {
-    br_enc32le_C(dst, x);
-
-    let dst: &mut [u8] = slice::from_raw_parts_mut(dst, 4);
+pub unsafe extern "C" fn br_enc32le(dst_raw: *mut u8, x: u32) {
+    let dst: &mut [u8] = slice::from_raw_parts_mut(dst_raw, 4);
 
     let mut dstv:  &mut Vec<u8> = &mut dst.to_vec();
     let dst2 = &mut dstv;
     common::aes::br_enc32le(dst2, x);
     
+    br_enc32le_C(dst_raw, x);
+
     for i in 0..4 {
         assert_eq!(dst[i],dst2[i]);
     }        
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn br_range_enc32le(dst: *mut u8, v: *const u32, num: size_t) {
-    br_range_enc32le_C(dst, v, num);
-
-    let dst: &mut [u8] = slice::from_raw_parts_mut(dst, num*4);
-    let v: &[u32] = slice::from_raw_parts(v, num);
+pub unsafe extern "C" fn br_range_enc32le(dst_raw: *mut u8, v_raw: *const u32, num: size_t) {
+    let dst: &mut [u8] = slice::from_raw_parts_mut(dst_raw, num*4);
+    let v: &[u32] = slice::from_raw_parts(v_raw, num);
 
     let mut dstv:  &mut Vec<u8> = &mut dst.to_vec();
     let dst2 = &mut dstv;
     common::aes::br_range_enc32le(dst2, v);
     
+    br_range_enc32le_C(dst_raw, v_raw, num);
+
     for i in 0..num {
         assert_eq!(dst[i],dst2[i]);
     }        
