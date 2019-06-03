@@ -8,3 +8,4 @@ extern uint32_t br_swap32(uint32_t x);
 extern void br_enc32le(unsigned char *dst, uint32_t x);
 extern void br_range_enc32le(unsigned char *dst, const uint32_t *v, size_t num);
 extern void br_aes_ct64_bitslice_Sbox(uint64_t *q);
+extern void br_aes_ct64_ortho(uint64_t *q);

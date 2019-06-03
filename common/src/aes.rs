@@ -192,3 +192,71 @@ pub fn br_aes_ct64_bitslice_Sbox(q: &mut[u64]) {
     q[1] = s6;
     q[0] = s7;
 }
+
+#[inline(always)]
+fn swapn(cl: u64, ch: u64, s: usize, q: &mut[u64], x: usize, y: usize){
+    let a: u64 = q[x];
+    let b: u64 = q[y];
+    q[x] = (a & cl) | ((b & cl) << s);
+    q[y] = ((a & ch) >> (s)) | (b & ch);
+}
+
+#[inline(always)]
+fn swap2(q: &mut[u64], x: usize, y: usize){
+    swapn(0x5555555555555555, 0xAAAAAAAAAAAAAAAA,  1, q, x, y);
+}
+#[inline(always)]
+fn swap4(q: &mut[u64], x: usize, y: usize){
+    swapn(0x3333333333333333, 0xCCCCCCCCCCCCCCCC,  2, q, x, y);
+}
+#[inline(always)]
+fn swap8(q: &mut[u64], x: usize, y: usize){
+    swapn(0x0F0F0F0F0F0F0F0F, 0xF0F0F0F0F0F0F0F0,  4, q, x, y);
+}
+
+/*
+static void br_aes_ct64_ortho(uint64_t *q) {
+#define SWAPN(cl, ch, s, x, y)   do { \
+        uint64_t a, b; \
+        a = (x); \
+        b = (y); \
+        (x) = (a & (uint64_t)(cl)) | ((b & (uint64_t)(cl)) << (s)); \
+        (y) = ((a & (uint64_t)(ch)) >> (s)) | (b & (uint64_t)(ch)); \
+    } while (0)
+
+#define SWAP2(x, y)    SWAPN(0x5555555555555555, 0xAAAAAAAAAAAAAAAA,  1, x, y)
+#define SWAP4(x, y)    SWAPN(0x3333333333333333, 0xCCCCCCCCCCCCCCCC,  2, x, y)
+#define SWAP8(x, y)    SWAPN(0x0F0F0F0F0F0F0F0F, 0xF0F0F0F0F0F0F0F0,  4, x, y)
+
+    SWAP2(q[0], q[1]);
+    SWAP2(q[2], q[3]);
+    SWAP2(q[4], q[5]);
+    SWAP2(q[6], q[7]);
+
+    SWAP4(q[0], q[2]);
+    SWAP4(q[1], q[3]);
+    SWAP4(q[4], q[6]);
+    SWAP4(q[5], q[7]);
+
+    SWAP8(q[0], q[4]);
+    SWAP8(q[1], q[5]);
+    SWAP8(q[2], q[6]);
+    SWAP8(q[3], q[7]);
+}
+*/
+pub fn br_aes_ct64_ortho(q: &mut[u64]) {
+    swap2(q,0,1);
+    swap2(q,2,3);
+    swap2(q,4,5);
+    swap2(q,6,7);
+
+    swap4(q,0,2);
+    swap4(q,1,3);
+    swap4(q,4,6);
+    swap4(q,5,7);
+
+    swap8(q,0,4);
+    swap8(q,1,5);
+    swap8(q,2,6);
+    swap8(q,3,7);
+}
